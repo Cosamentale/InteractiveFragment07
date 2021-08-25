@@ -263,49 +263,32 @@ const displayShaderSource = `
     uniform vec2 mouse;
     uniform float time;
     uniform vec2 resolution;
-    uniform sampler2D uVideo;
-    uniform float test;
-    float bl(vec2 p, vec2 r){ vec2 q = abs(p)-r;
-return length(max(q,vec2(0.)))+min(0.,max(q.x,q.y));}
+    mat2 rot(float t){float c = cos(t); float s = sin(t);  return mat2(c,-s,s,c);}
     void main () {
       vec2 uv = -1. + 2. * vUv;
     float fac =  resolution.x/resolution.y;
     uv.x *=fac;
-    vec2 ut =  uv*5.;
-    vec2  p = vec2(floor((mouse.x-.5)*10.*fac),floor((mouse.y-0.5)*10.))+0.5;
-    float f1 = bl(ut-p,vec2(0.5));    float d1 = step(0.01,distance(f1,0.));
-    vec2 ur = mod(ut,vec2(1.))-0.5;
-    ur += p;
-    ur = mix(ut,ur,test);
-    float r1 = fract(sin(dot(floor(ur*2.),vec2(45.23,97.14)))*7845.236+floor(time*0.1)*0.1);
-    float bb = fract((ut.x+ut.y));
-    float b1 = step(0.5,bb);
-    float b2 = step(bb,0.5);
-    float bb2 = fract((ut.x-ut.y));
-    float b3 = step(0.5,bb2);
-    float b4 = step(bb2,0.5);
-    float r2 = mix(1.,mix(0.,mix(b1,mix(b2,mix(b3,b4,step(5./6.,r1)),step(4./6.,r1)),step(3./6.,r1)),step(2./6.,r1)),step(1./6.,r1));
-    float t1 =  texture2D( uVideo, vUv).x;
-    gl_FragColor = vec4(1.,t1,t1,t1);
+    vec2 ug  = uv*8.;
+        float d1 = 1.;
+        float ta = .5;
+        float tb =sin(time*0.1)*3.14*distance(mouse.x,0.5)*2.;
+        ug *= rot(-tb);
+        ug -= uv;
+
+        for(int  i = 0 ; i < 8 ; i++){
+        ug += uv*distance(mouse.y,0.5);
+        ug *= rot(tb*float(i));
+        ug = mod(ug+ta,vec2(ta*2.))-ta;
+        float f1 = min(smoothstep(0.0,0.02,length(fract(ug.x)-0.5)),smoothstep(0.0,0.02,length(fract(ug.y)-0.5)));
+        d1 = min(d1,f1);
+        }
+
+    gl_FragColor = vec4(d1,d1,d1,1.);
     }
 `;
 
 
 
-var video;
-
-var constraints = { audio: true, video: { width: 1280, height: 720 } };
-
-navigator.mediaDevices.getUserMedia(constraints)
-.then(function(mediaStream) {
-   video = document.querySelector('video');
-  video.srcObject = mediaStream;
-  video.onloadedmetadata = function(e) {
-    video.play();
-  };
-})
-.catch(function(err) { console.log(err.name + ": " + err.message); });
-//var video = document.getElementById('video');
 
 const blit = (() => {
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -406,12 +389,10 @@ function drawDisplay (target) {
   gl.uniform1f(displayMaterial.uniforms.time, performance.now() / 1000);
   gl.uniform2f(displayMaterial.uniforms.resolution, canvas.width , canvas.height);
   gl.uniform2f(displayMaterial.uniforms.mouse, pointers[0].texcoordX, pointers[0].texcoordY);
-  gl.uniform1i(displayMaterial.uniforms.uVideo, video);
-  gl.uniform1f(displayMaterial.uniforms.test, test);
+
     blit(target);
 }
 
-var test = 0;
 function fract(tt) { return tt - Math.floor(tt); }
 
 canvas.addEventListener('mousedown', e => {
@@ -424,7 +405,6 @@ canvas.addEventListener('mousedown', e => {
     if (pointer == null)
         pointer = new pointerPrototype();
     updatePointerDownData(pointer, -1, posX, posY);
-    test = 1;
 });
 
 canvas.addEventListener('mousemove', e => {
@@ -434,13 +414,11 @@ canvas.addEventListener('mousemove', e => {
     let posX = scaleByPixelRatio(e.offsetX);
     let posY = scaleByPixelRatio(e.offsetY);
     updatePointerMoveData(pointer, posX, posY);
-test = 1;
 });
 
 window.addEventListener('mouseup', () => {
 
     updatePointerUpData(pointers[0]);
-    test = 0;
 });
 
 canvas.addEventListener('touchstart', e => {
@@ -454,7 +432,6 @@ canvas.addEventListener('touchstart', e => {
         let posY = scaleByPixelRatio(touches[0].pageY);
         //updatePointerDownData(pointers[i + 1], touches[i].identifier, posX, posY);
         updatePointerDownData(pointers[0], touches[0].identifier, posX, posY);
-test = 1;
   //  }
 });
 
@@ -469,7 +446,6 @@ canvas.addEventListener('touchmove', e => {
         let posX = scaleByPixelRatio(touches[0].pageX);
         let posY = scaleByPixelRatio(touches[0].pageY);
         updatePointerMoveData(pointer, posX, posY);
-        test = 1;
         //navigator.vibrate(step(0.5,fract(posX*5.))*100.);
   //  }
 }, false);
@@ -483,7 +459,6 @@ window.addEventListener('touchend', e => {
         let pointer = pointers.find(p => p.id == touches[0].identifier);
         //if (pointer == null) continue;
         updatePointerUpData(pointer);
-          test = 0;
   //  }
 });
 
