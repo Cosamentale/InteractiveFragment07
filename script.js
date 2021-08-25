@@ -51,14 +51,14 @@ function getWebGLContext (canvas) {
         gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
 
     let halfFloat;
-    let supportLinearFiltering;
+  /*  let supportLinearFiltering;
     if (isWebGL2) {
         gl.getExtension('EXT_color_buffer_float');
         supportLinearFiltering = gl.getExtension('OES_texture_float_linear');
     } else {
         halfFloat = gl.getExtension('OES_texture_half_float');
         supportLinearFiltering = gl.getExtension('OES_texture_half_float_linear');
-    }
+    }*/
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -89,7 +89,7 @@ function getWebGLContext (canvas) {
             formatRG,
             formatR,
             halfFloatTexType,
-            supportLinearFiltering
+          //  supportLinearFiltering
         }
     };
 }
@@ -420,7 +420,6 @@ window.addEventListener('mouseup', () => {
 });
 
 canvas.addEventListener('touchstart', e => {
-  navigator.vibrate(50);
     e.preventDefault();
     const touches = e.targetTouches;
     while (touches.length >= pointers.length)
@@ -449,7 +448,7 @@ canvas.addEventListener('touchmove', e => {
 }, false);
 
 window.addEventListener('touchend', e => {
-  navigator.vibrate(50);
+
 
     const touches = e.changedTouches;
   //  for (let i = 0; i < touches.length; i++)
