@@ -270,14 +270,13 @@ const displayShaderSource = `
     uv.x *=fac;
     vec2 ug  = uv*7.;
         float d1 = 1.;
-        float ta = .5;
-        float tb =3.14*distance(mouse.x,0.5)*0.5;
+        float tb =1.57*distance(mouse.x,0.5);
         ug *= rot(-tb);
         float dm = distance(mouse.y,0.5);
         for(int  i = 1 ; i < 7 ; i++){
         ug += uv*dm;
         ug *= rot(tb*float(i));
-        ug = mod(ug+ta,vec2(ta*2.))-ta;
+        ug = mod(ug+0.5,vec2(1.))-0.5;
         float f1 = min(smoothstep(0.0,0.02,length(fract(ug.x)-0.5)),smoothstep(0.0,0.02,length(fract(ug.y)-0.5)));
         d1 = min(d1,f1);
         }
