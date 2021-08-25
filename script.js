@@ -281,7 +281,7 @@ const displayShaderSource = `
         d1 = min(d1,f1);
         }
 
-    gl_FragColor = vec4(d1,d1,d1,1.);
+    gl_FragColor = vec4(d1);
     }
 `;
 
