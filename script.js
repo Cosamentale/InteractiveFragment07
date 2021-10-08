@@ -263,7 +263,7 @@ const displayShaderSource = `
     uniform vec2 mouse;
     uniform float time;
     uniform vec2 resolution;
-    mat2 rot(float t){float c = cos(t); float s = sin(t);  return mat2(c,-s,s,c);}
+  //  mat2 rot(float t){float c = cos(t); float s = sin(t);  return mat2(c,-s,s,c);}
     void main () {
       vec2 uv = -1. + 2. * vUv;
     float fac =  resolution.x/resolution.y;
