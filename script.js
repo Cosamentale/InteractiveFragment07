@@ -263,14 +263,14 @@ const displayShaderSource = `
     uniform vec2 mouse;
     uniform float time;
     uniform vec2 resolution;
-  //  mat2 rot(float t){float c = cos(t); float s = sin(t);  return mat2(c,-s,s,c);}
+    mat2 rot(float t){float c = cos(t); float s = sin(t);  return mat2(c,-s,s,c);}
     void main () {
       vec2 uv = -1. + 2. * vUv;
     float fac =  resolution.x/resolution.y;
     uv.x *=fac;
     vec2 ug  = uv*7.;
         float d1 = 1.;
-      /*  float tb =1.57*distance(mouse.x,0.5);
+        float tb =1.57*distance(mouse.x,0.5);
         ug *= rot(-tb);
         float dm = distance(mouse.y,0.5);
         for(int  i = 1 ; i < 7 ; i++){
@@ -280,7 +280,7 @@ const displayShaderSource = `
         float f1 = min(smoothstep(0.0,0.02,length(fract(ug.x)-0.5)),smoothstep(0.0,0.02,length(fract(ug.y)-0.5)));
         d1 = min(d1,f1);
         }
-*/
+
     gl_FragColor = vec4(d1);
     }
 `;
