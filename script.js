@@ -51,14 +51,14 @@ function getWebGLContext (canvas) {
         gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
 
     let halfFloat;
-  /*  let supportLinearFiltering;
+   let supportLinearFiltering;
     if (isWebGL2) {
         gl.getExtension('EXT_color_buffer_float');
         supportLinearFiltering = gl.getExtension('OES_texture_float_linear');
     } else {
         halfFloat = gl.getExtension('OES_texture_half_float');
         supportLinearFiltering = gl.getExtension('OES_texture_half_float_linear');
-    }*/
+    }
 
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -89,7 +89,7 @@ function getWebGLContext (canvas) {
             formatRG,
             formatR,
             halfFloatTexType,
-          //  supportLinearFiltering
+            supportLinearFiltering
         }
     };
 }
@@ -270,7 +270,7 @@ const displayShaderSource = `
     uv.x *=fac;
     vec2 ug  = uv*7.;
         float d1 = 1.;
-        float tb =1.57*distance(mouse.x,0.5);
+      /*  float tb =1.57*distance(mouse.x,0.5);
         ug *= rot(-tb);
         float dm = distance(mouse.y,0.5);
         for(int  i = 1 ; i < 7 ; i++){
@@ -280,7 +280,7 @@ const displayShaderSource = `
         float f1 = min(smoothstep(0.0,0.02,length(fract(ug.x)-0.5)),smoothstep(0.0,0.02,length(fract(ug.y)-0.5)));
         d1 = min(d1,f1);
         }
-
+*/
     gl_FragColor = vec4(d1);
     }
 `;
